@@ -13,6 +13,7 @@ find_package(SFML 2.5 COMPONENTS system window graphics audio REQUIRED)
 
 add_executable(
 	SinfourmisRenderer
+	src/primitives/arc.cpp
 	src/main.cpp
 )
 

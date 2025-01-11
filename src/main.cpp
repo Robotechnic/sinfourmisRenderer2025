@@ -2,6 +2,8 @@
 #include "nlohmann/json.hpp"
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <cmath>
+#include "primitives/arc.hpp"
 
 using json = nlohmann::json;
 
@@ -31,6 +33,11 @@ int main(int argc, char **argv) {
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "Sinfourmis Renderer");
 
+	Arc arc(100, 0, std::numbers::pi / 2);
+	arc.setThickness(50);
+	arc.setFillColor(sf::Color::Red);
+	arc.updateArc();
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -39,7 +46,12 @@ int main(int argc, char **argv) {
         }
 
         window.clear(sf::Color::Black);
-        window.display();
+		
+		
+		arc.setPosition(400, 300);
+		window.draw(arc);
+		
+		window.display();
     }
 
     return 0;
