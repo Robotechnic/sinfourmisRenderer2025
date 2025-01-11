@@ -1,11 +1,18 @@
 #include "argparse/argparse.hpp"
 #include "nlohmann/json.hpp"
+#include "dynamic_shape.hpp"
+#include "data_type.hpp"
+#include "node.cpp"
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Graphics/Transform.hpp>
 #include <fstream>
 #include <cmath>
 #include "primitives/arc.hpp"
+#include <memory>
 
 using json = nlohmann::json;
+
 
 int main(int argc, char **argv) {
     argparse::ArgumentParser program("SinfourmisRenderer");
@@ -31,12 +38,23 @@ int main(int argc, char **argv) {
 	json logs;
 	file >> logs;
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Sinfourmis Renderer");
+    WorldData data(logs["data"]["1"]);
 
-	Arc arc(100, 0, std::numbers::pi / 2);
-	arc.setThickness(50);
-	arc.setFillColor(sf::Color::Red);
-	arc.updateArc();
+    std::vector<std::unique_ptr<DynamicShape>> elements;
+
+    int width = 800;
+    int height = 600;
+
+
+    AnimationConfig config = {10, 2, sf::Transform().translate(width/2, height/2), sf::Transform().scale(4, 4)};
+
+    for (auto &node : data.nodes) {
+        node.second.pos_ = config.physic_transform.transformPoint(node.second.pos_);
+        elements.push_back(std::make_unique<Node>(node.second));
+    }
+
+    sf::RenderWindow window(sf::VideoMode(width, height), "Sinfourmis Renderer");
+
 
     while (window.isOpen()) {
         sf::Event event;
@@ -46,12 +64,14 @@ int main(int argc, char **argv) {
         }
 
         window.clear(sf::Color::Black);
-		
-		
-		arc.setPosition(400, 300);
-		window.draw(arc);
-		
-		window.display();
+
+        for (size_t i = 0; i < elements.size(); i++)
+        {
+            elements.at(i)->draw(window, config, 0);
+        }
+        
+
+        window.display();
     }
 
     return 0;

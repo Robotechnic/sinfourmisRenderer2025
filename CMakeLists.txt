@@ -15,6 +15,8 @@ add_executable(
 	SinfourmisRenderer
 	src/primitives/arc.cpp
 	src/main.cpp
+	src/node.cpp
+	src/edge.cpp
 )
 
 target_link_libraries(SinfourmisRenderer PUBLIC m sfml-graphics sfml-window sfml-system sfml-audio)
