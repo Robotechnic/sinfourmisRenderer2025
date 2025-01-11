@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <SFML/System.hpp>
 
 using json = nlohmann::json;
 
@@ -95,8 +96,8 @@ struct RawNodeData {
     std::optional<int> food;
     std::optional<int> team;
     int id;
-    int x;
-    int y;
+    float x;
+    float y;
     int pheromones;
     std::optional<std::vector<AntGroupData>> ants;
     std::optional<RawNodeDataAnimation> anim;
@@ -228,8 +229,7 @@ struct NodeDataAnimation {
 class NodeData {
   public:
     int id;
-    int x;
-    int y;
+    sf::Vector2f pos_;
     std::string type; // "VIDE", "EAU", "NOURRITURE", "REINE"
     int food;
     int team;
@@ -237,10 +237,10 @@ class NodeData {
     std::optional<NodeDataAnimation> anim;
     int phero;
 
-    explicit NodeData() : id(-1), x(0), y(0), type("VIDE"), food(-1), team(-1), phero(-1) {}
+    explicit NodeData() : id(-1), pos_(sf::Vector2f(0, 0)), type("VIDE"), food(-1), team(-1), phero(-1) {}
 
     explicit NodeData(const RawNodeData &raw)
-        : id(raw.id), x(raw.x), y(raw.y), type(raw.type.value_or("VIDE")),
+        : id(raw.id), pos_(sf::Vector2f(raw.x, raw.y)), type(raw.type.value_or("VIDE")),
           food((raw.type.value_or("VIDE") == "NOURRITURE") ? raw.food.value_or(0) : 0),
           team((raw.type.value_or("VIDE") == "REINE") ? raw.team.value_or(0) : 0),
           phero(raw.pheromones) {
