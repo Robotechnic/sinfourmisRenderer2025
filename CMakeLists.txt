@@ -14,6 +14,8 @@ find_package(SFML 2.5 COMPONENTS system window graphics audio REQUIRED)
 add_executable(
 	SinfourmisRenderer
 	src/main.cpp
+	src/node.cpp
+	src/edge.cpp
 )
 
 target_link_libraries(SinfourmisRenderer PUBLIC m sfml-graphics sfml-window sfml-system sfml-audio)

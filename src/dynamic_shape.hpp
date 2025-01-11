@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <data_type.hpp>
 
 class DynamicShape {
 
@@ -10,7 +11,7 @@ class DynamicShape {
 
     }
 
-    virtual void draw(sf::RenderWindow &window, float t) = 0;
+    virtual void draw(sf::RenderWindow &window, const AnimationConfig& config, float t) = 0;
 
     virtual ~DynamicShape() = default;
 };

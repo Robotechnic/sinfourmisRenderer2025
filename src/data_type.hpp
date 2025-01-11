@@ -5,9 +5,16 @@
 #include <optional>
 #include <string>
 #include <vector>
-#include <SFML/System.hpp>
+#include <SFML/Graphics/Transform.hpp>
 
 using json = nlohmann::json;
+
+struct AnimationConfig {
+    float node_size;
+    float line_thickness;
+    sf::Transform graphic_transform;
+    sf::Transform physic_transform;
+};
 
 namespace nlohmann {
 template<typename T> struct adl_serializer<std::optional<T>> {
