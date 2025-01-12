@@ -62,7 +62,15 @@ class Node : public DynamicShape {
 
     void draw(sf::RenderWindow &window, const AnimationConfig &config, float t) override {
         sf::CircleShape circle(config.node_size/2);
-        circle.setFillColor(sf::Color::Black);
+
+		// convert 8 bit integer color to 32 bit color
+		uint32_t color = 0;
+		int r = (data_.phero >> 5) * 255 / 7;
+		int g = ((data_.phero >> 2) & 0b111) * 255 / 7;
+		int b = (data_.phero & 0b11) * 255 / 3;
+		sf::Color phero_color(r, g, b);
+
+        circle.setFillColor(phero_color);
         circle.setOutlineColor(sf::Color::White);
         circle.setOutlineThickness(config.line_thickness);
 
@@ -80,5 +88,26 @@ class Node : public DynamicShape {
         }
 
         window.draw(circle, config.graphic_transform * sf::Transform().translate(data_.pos_).translate(-config.node_size/2.f, -config.node_size/2.f));
+		if (data_.type == "REINE") {
+			#define ANGLE 0.23
+			Arc arc1(config.node_size * 0.75, ANGLE, M_PI / 2 - ANGLE);
+            arc1.setFillColor(sf::Color(
+                (uint32_t)std::stoul(world_.teams.at(data_.team).color.substr(1, 6) + "ff", nullptr, 16)));
+            arc1.setThickness(config.node_size * 0.3);
+			arc1.updateArc();
+			window.draw(arc1, config.graphic_transform * sf::Transform().translate(data_.pos_));
+			arc1.setStartAngle(M_PI / 2 + ANGLE);
+			arc1.setEndAngle(M_PI - ANGLE);
+			arc1.updateArc();
+			window.draw(arc1, config.graphic_transform * sf::Transform().translate(data_.pos_));
+			arc1.setStartAngle(M_PI + ANGLE);
+			arc1.setEndAngle(3 * M_PI / 2 - ANGLE);
+			arc1.updateArc();
+			window.draw(arc1, config.graphic_transform * sf::Transform().translate(data_.pos_));
+			arc1.setStartAngle(3 * M_PI / 2 + ANGLE);
+			arc1.setEndAngle(2 * M_PI - ANGLE);
+			arc1.updateArc();
+			window.draw(arc1, config.graphic_transform * sf::Transform().translate(data_.pos_));
+		}
     }
 };
