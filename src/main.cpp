@@ -3,6 +3,7 @@
 #include "dynamic_shape.hpp"
 #include "data_type.hpp"
 #include "node.cpp"
+#include "edge.cpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Graphics/Transform.hpp>
@@ -38,25 +39,45 @@ int main(int argc, char **argv) {
 	json logs;
 	file >> logs;
 
-    WorldData data(logs["data"]["1"]);
-
     std::vector<std::unique_ptr<DynamicShape>> elements;
 
     int width = 800;
     int height = 600;
 
+    AnimationConfig config = {10, 30, 15, 2, sf::Transform().translate(width/2, height/2), sf::Transform().scale(4, 4)};
 
-    AnimationConfig config = {10, 2, sf::Transform().translate(width/2, height/2), sf::Transform().scale(4, 4)};
-
-    for (auto &node : data.nodes) {
-        node.second.pos_ = config.physic_transform.transformPoint(node.second.pos_);
-        elements.push_back(std::make_unique<Node>(node.second));
-    }
+    
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Sinfourmis Renderer");
+	window.setFramerateLimit(config.frame_rate);
 
+	unsigned int frame_counter = 0;
+	unsigned int world_counter = 1;
+
+	WorldData data(logs["data"][std::to_string(world_counter)]);
 
     while (window.isOpen()) {
+		if (frame_counter == 0) {
+			std::cout << "Frame " << world_counter << std::endl;
+			if (world_counter == logs["data"].size()) {
+				window.close();
+				break;
+			}
+			elements.clear();
+			data = WorldData(logs["data"][std::to_string(world_counter)]);
+            for (auto &node : data.nodes) {
+                node.second.pos_ = config.physic_transform.transformPoint(node.second.pos_);
+                elements.push_back(std::make_unique<Node>(node.second));
+            }
+
+            for (auto &edge : data.edges) {
+                elements.push_back(std::make_unique<Edge>(edge));
+            }
+			frame_counter = config.frame_duration;
+			world_counter++;
+        }
+		frame_counter--;
+
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)

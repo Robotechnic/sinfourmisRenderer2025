@@ -11,6 +11,8 @@ using json = nlohmann::json;
 
 struct AnimationConfig {
     float node_size;
+	int frame_rate;
+	int frame_duration;
     float line_thickness;
     sf::Transform graphic_transform;
     sf::Transform physic_transform;
@@ -60,7 +62,7 @@ struct TeamData {
         nlohmann_json_j.at("name").get_to(nlohmann_json_t.name);
         nlohmann_json_j.at("color").get_to(nlohmann_json_t.color);
         nlohmann_json_j.at("score").get_to(nlohmann_json_t.score);
-        if (nlohmann_json_j.contains("next")) {
+        if (nlohmann_json_j.contains("next") && !nlohmann_json_j["next"].empty()) {
             nlohmann_json_j.at("next").get_to(nlohmann_json_t.next);
         } else {
             nlohmann_json_t.next = std::nullopt;
@@ -84,13 +86,13 @@ struct RawNodeDataAnimation {
     }
     friend void from_json(const nlohmann::json &nlohmann_json_j,
                           RawNodeDataAnimation &nlohmann_json_t) {
-        if (nlohmann_json_j.contains("food")) {
+        if (nlohmann_json_j.contains("food") && !nlohmann_json_j["food"].empty()) {
             nlohmann_json_j.at("food").get_to(nlohmann_json_t.food);
         } else {
             nlohmann_json_t.food = std::nullopt;
         }
 
-        if (nlohmann_json_j.contains("ants")) {
+        if (nlohmann_json_j.contains("ants") && !nlohmann_json_j["ants"].empty()) {
             nlohmann_json_j.at("ants").get_to(nlohmann_json_t.ants);
         } else {
             nlohmann_json_t.ants = std::nullopt;
@@ -120,19 +122,19 @@ struct RawNodeData {
         nlohmann_json_j["anim"] = nlohmann_json_t.anim;
     }
     friend void from_json(const nlohmann::json &nlohmann_json_j, RawNodeData &nlohmann_json_t) {
-        if (nlohmann_json_j.contains("type")) {
+        if (nlohmann_json_j.contains("type") && !nlohmann_json_j["type"].empty()) {
             nlohmann_json_j.at("type").get_to(nlohmann_json_t.type);
         } else {
             nlohmann_json_t.type = std::nullopt;
         }
 
-        if (nlohmann_json_j.contains("food")) {
+        if (nlohmann_json_j.contains("food") && !nlohmann_json_j["food"].empty()) {
             nlohmann_json_j.at("food").get_to(nlohmann_json_t.food);
         } else {
             nlohmann_json_t.food = std::nullopt;
         }
 
-        if (nlohmann_json_j.contains("team")) {
+        if (nlohmann_json_j.contains("team") && !nlohmann_json_j["team"].empty()) {
             nlohmann_json_j.at("team").get_to(nlohmann_json_t.team);
         } else {
             nlohmann_json_t.team = std::nullopt;
@@ -143,13 +145,13 @@ struct RawNodeData {
         nlohmann_json_j.at("y").get_to(nlohmann_json_t.y);
         nlohmann_json_j.at("pheromones").get_to(nlohmann_json_t.pheromones);
 
-        if (nlohmann_json_j.contains("ants")) {
+        if (nlohmann_json_j.contains("ants") && !nlohmann_json_j["ants"].empty()) {
             nlohmann_json_j.at("ants").get_to(nlohmann_json_t.ants);
         } else {
             nlohmann_json_t.ants = std::nullopt;
         }
 
-        if (nlohmann_json_j.contains("anim")) {
+        if (nlohmann_json_j.contains("anim") && !nlohmann_json_j["anim"].empty()) {
             nlohmann_json_j.at("anim").get_to(nlohmann_json_t.anim);
         } else {
             nlohmann_json_t.anim = std::nullopt;
@@ -167,15 +169,17 @@ struct EdgeGroupData {
     double progress;
     std::optional<AntGroupEdgeAnimationData> anim_data;
     friend void to_json(nlohmann::json &nlohmann_json_j, const EdgeGroupData &nlohmann_json_t) {
-        nlohmann_json_j["group_data"] = nlohmann_json_t.group_data;
+        nlohmann_json_j["qt"] = nlohmann_json_t.group_data.qt;
+		nlohmann_json_j["team"] = nlohmann_json_t.group_data.team;
         nlohmann_json_j["progress"] = nlohmann_json_t.progress;
-        nlohmann_json_j["anim_data"] = nlohmann_json_t.anim_data;
+        nlohmann_json_j["anim"] = nlohmann_json_t.anim_data;
     }
     friend void from_json(const nlohmann::json &nlohmann_json_j, EdgeGroupData &nlohmann_json_t) {
-        nlohmann_json_j.at("group_data").get_to(nlohmann_json_t.group_data);
+        nlohmann_json_j.at("qt").get_to(nlohmann_json_t.group_data.qt);
+		nlohmann_json_j.at("team").get_to(nlohmann_json_t.group_data.team);
         nlohmann_json_j.at("progress").get_to(nlohmann_json_t.progress);
-        if (nlohmann_json_j.contains("anim_data")) {
-            nlohmann_json_j.at("anim_data").get_to(nlohmann_json_t.anim_data);
+        if (nlohmann_json_j.contains("anim") && !nlohmann_json_j["anim"].empty()) {
+            nlohmann_json_j.at("anim").get_to(nlohmann_json_t.anim_data);
         } else {
             nlohmann_json_t.anim_data = std::nullopt;
         }
@@ -196,12 +200,12 @@ struct RawEdgeData {
     friend void from_json(const nlohmann::json &nlohmann_json_j, RawEdgeData &nlohmann_json_t) {
         nlohmann_json_j.at("id_1").get_to(nlohmann_json_t.id_1);
         nlohmann_json_j.at("id_2").get_to(nlohmann_json_t.id_2);
-        if (nlohmann_json_j.contains("life_ratio")) {
+        if (nlohmann_json_j.contains("life_ratio") && !nlohmann_json_j["life_ratio"].empty()) {
             nlohmann_json_j.at("life_ratio").get_to(nlohmann_json_t.life_ratio);
         } else {
             nlohmann_json_t.life_ratio = std::nullopt;
         }
-        if (nlohmann_json_j.contains("groups")) {
+        if (nlohmann_json_j.contains("groups")  && !nlohmann_json_j["groups"].empty()) {
             nlohmann_json_j.at("groups").get_to(nlohmann_json_t.groups);
         } else {
             nlohmann_json_t.groups = std::nullopt;
@@ -218,13 +222,13 @@ struct NodeDataAnimation {
     }
     friend void from_json(const nlohmann::json &nlohmann_json_j,
                           NodeDataAnimation &nlohmann_json_t) {
-        if (nlohmann_json_j.contains("food")) {
+        if (nlohmann_json_j.contains("food") && !nlohmann_json_j["food"].empty()) {
             nlohmann_json_j.at("food").get_to(nlohmann_json_t.food);
         } else {
             nlohmann_json_t.food = std::nullopt;
         }
     
-        if (nlohmann_json_j.contains("ants")) {
+        if (nlohmann_json_j.contains("ants") && !nlohmann_json_j["ants"].empty()) {
             nlohmann_json_j.at("ants").get_to(nlohmann_json_t.ants);
         } else {
             nlohmann_json_t.ants = std::nullopt;

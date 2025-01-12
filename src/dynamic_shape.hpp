@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <data_type.hpp>
+#include <cmath>
 
 class DynamicShape {
 
