@@ -31,19 +31,5 @@ class Edge : public DynamicShape {
 
         // Draw the rectangle with the appropriate transformation
         window.draw(line, config.graphic_transform);
-        for (auto &group : data_.groups) {
-            float size = (config.node_size * 0.5 * std::exp(-1 / group.group_data.qt));
-            sf::CircleShape group_repr(size);
-            float progress = std::lerp(group.progress, group.anim_data->progress, t);
-            // int transparency = ((t <= 0.05 || t >= 0.95) ? std::exp(-4 * std::max(t, 1 - t)) : 1)
-            // * 255;
-            group_repr.setFillColor(sf::Color(world_.teams.at(group.group_data.team)
-                                                  .color_int)); // & (0xFFFFFF00 | transparency)));
-
-            window.draw(group_repr,
-                        config.graphic_transform * sf::Transform().translate(sf::Vector2f(
-                                                       std::lerp(from.x, to.x, progress) - size,
-                                                       std::lerp(from.y, to.y, progress) - size)));
-        }
     };
 };

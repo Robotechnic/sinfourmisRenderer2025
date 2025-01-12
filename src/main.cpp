@@ -4,6 +4,7 @@
 #include "data_type.hpp"
 #include "node.cpp"
 #include "edge.cpp"
+#include "group.cpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Graphics/Transform.hpp>
@@ -153,6 +154,11 @@ int main(int argc, char **argv) {
 
             for (auto &edge : data.edges) {
                 elements.push_back(std::make_unique<Edge>(data, edge));
+            }
+			for (auto &edge : data.edges) {
+				for(auto &group : edge.groups) {
+                	elements.push_back(std::make_unique<Group>(data, edge, group));
+				}
             }
             for (auto &node : data.nodes) {
                 elements.push_back(std::make_unique<Node>(data, node.second));

@@ -17,6 +17,7 @@ add_executable(
 	src/main.cpp
 	src/node.cpp
 	src/edge.cpp
+	src/group.cpp
 )
 
 target_link_libraries(SinfourmisRenderer PUBLIC m sfml-graphics sfml-window sfml-system sfml-audio)
