@@ -89,8 +89,8 @@ class Node : public DynamicShape {
 
         window.draw(circle, config.graphic_transform * sf::Transform().translate(data_.pos_).translate(-config.node_size/2.f, -config.node_size/2.f));
 		if (data_.type == "REINE") {
-			#define ANGLE 0.23
-			Arc arc1(config.node_size * 0.75, ANGLE, M_PI / 2 - ANGLE);
+			#define ANGLE 0.4
+			Arc arc1(config.node_size * 0.5, ANGLE, M_PI / 2 - ANGLE);
             arc1.setFillColor(sf::Color(
                 (uint32_t)std::stoul(world_.teams.at(data_.team).color.substr(1, 6) + "ff", nullptr, 16)));
             arc1.setThickness(config.node_size * 0.3);
@@ -108,6 +108,22 @@ class Node : public DynamicShape {
 			arc1.setEndAngle(2 * M_PI - ANGLE);
 			arc1.updateArc();
 			window.draw(arc1, config.graphic_transform * sf::Transform().translate(data_.pos_));
-		}
+		} else if(data_.type == "EAU") {
+            circle.setFillColor(sf::Color::Transparent);
+            circle.setOutlineColor(sf::Color::Cyan);
+            circle.setOutlineThickness(config.line_thickness);
+			window.draw(circle, config.graphic_transform * sf::Transform().translate(data_.pos_).translate(-config.node_size/2.f, -config.node_size/2.f));
+        } else if(data_.type == "NOURRITURE") {
+
+            float ratio = (float) (std::lerp(data_.food, 
+                data_.anim.value_or<NodeDataAnimation>({std::make_optional(data_.food), std::nullopt})
+                    .food.value_or(data_.food), t) / (float) world_.max_food);
+            float radius =  .75f * config.node_size * ratio * .5f;
+
+            circle.setRadius(radius);
+            circle.setOutlineColor(sf::Color::Transparent);
+            circle.setFillColor(sf::Color::Red);
+            window.draw(circle, config.graphic_transform * sf::Transform().translate(data_.pos_).translate(-radius, -radius));
+        }
     }
 };
