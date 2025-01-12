@@ -44,11 +44,15 @@ int main(int argc, char **argv) {
     int width = 800;
     int height = 600;
 
-    AnimationConfig config = {10, 30, 15, 2, sf::Transform().translate(width/2, height/2), sf::Transform().scale(4, 4)};
+    AnimationConfig config = {20, 30, 15, 5, sf::Transform().translate(width/2, height/2), sf::Transform().scale(12, 12)};
 
     
 
-    sf::RenderWindow window(sf::VideoMode(width, height), "Sinfourmis Renderer");
+
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8.0;
+
+    sf::RenderWindow window(sf::VideoMode(width, height), "Sinfourmis Renderer", sf::Style::Close, settings);
 	window.setFramerateLimit(config.frame_rate);
 
 	unsigned int frame_counter = 0;
@@ -67,11 +71,13 @@ int main(int argc, char **argv) {
 			data = WorldData(logs["data"][std::to_string(world_counter)]);
             for (auto &node : data.nodes) {
                 node.second.pos_ = config.physic_transform.transformPoint(node.second.pos_);
-                elements.push_back(std::make_unique<Node>(data, node.second));
             }
 
             for (auto &edge : data.edges) {
                 elements.push_back(std::make_unique<Edge>(data, edge));
+            }
+            for (auto &node : data.nodes) {
+                elements.push_back(std::make_unique<Node>(data, node.second));
             }
 			frame_counter = config.frame_duration;
 			world_counter++;
@@ -88,7 +94,7 @@ int main(int argc, char **argv) {
 
         for (size_t i = 0; i < elements.size(); i++)
         {
-            elements.at(i)->draw(window, config, 0);
+            elements.at(i)->draw(window, config, 1.f - ((float) frame_counter) / (float) config.frame_duration );
         }
         
 
