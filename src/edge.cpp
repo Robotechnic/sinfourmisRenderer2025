@@ -3,13 +3,16 @@
 
 class Edge : public DynamicShape{
     public:
+        const WorldData& world_;
         const EdgeData& data_;
 		const float thikness = 5;
 		sf::Vector2f from;
 		sf::Vector2f to;
 		float length;
 
-    explicit Edge(const EdgeData& data ) : DynamicShape(5), data_(data) {
+    explicit Edge(const WorldData& world, const EdgeData& data ) : DynamicShape(5), world_(world), data_(data) {
+		from = world.nodes.at(data.id_1).pos_;
+		to = world.nodes.at(data.id_2).pos_;
         length = sqrt(pow(from.x - to.x, 2) + pow(from.y - to.y, 2));
     }
 
@@ -28,7 +31,7 @@ class Edge : public DynamicShape{
 				std::lerp(from.y, to.y, progress)
 			));
 			float transparency = (t <= 0.05 || t >= 0.95) ? std::exp(-4 * std::max(t, 1 - t)) : 1;
-			// todo: add color
+			//group_repr.setFillColor(world_.teams.at(group.group_data.team).color);
 
 			window.draw(group_repr);
 		}
