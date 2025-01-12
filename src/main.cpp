@@ -67,11 +67,11 @@ int main(int argc, char **argv) {
 			data = WorldData(logs["data"][std::to_string(world_counter)]);
             for (auto &node : data.nodes) {
                 node.second.pos_ = config.physic_transform.transformPoint(node.second.pos_);
-                elements.push_back(std::make_unique<Node>(node.second));
+                elements.push_back(std::make_unique<Node>(data, node.second));
             }
 
             for (auto &edge : data.edges) {
-                elements.push_back(std::make_unique<Edge>(edge));
+                elements.push_back(std::make_unique<Edge>(data, edge));
             }
 			frame_counter = config.frame_duration;
 			world_counter++;
