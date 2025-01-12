@@ -62,7 +62,7 @@ struct TeamData {
         nlohmann_json_j.at("id").get_to(nlohmann_json_t.id);
         nlohmann_json_j.at("name").get_to(nlohmann_json_t.name);
         nlohmann_json_j.at("color").get_to(nlohmann_json_t.color);
-		nlohmann_json_t.color_int = std::stoul(nlohmann_json_t.color.substr(1, 6) + "ff", nullptr, 16);
+		nlohmann_json_t.color_int = (uint32_t) std::stoul(nlohmann_json_t.color.substr(1, 6) + "ff", nullptr, 16);
         nlohmann_json_j.at("score").get_to(nlohmann_json_t.score);
         if (nlohmann_json_j.contains("next") && !nlohmann_json_j["next"].empty()) {
             nlohmann_json_j.at("next").get_to(nlohmann_json_t.next);

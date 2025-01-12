@@ -12,20 +12,18 @@ class Edge : public DynamicShape {
     float length;
 
     explicit Edge(const WorldData &world, const EdgeData &data)
-        : DynamicShape(5), world_(world), data_(data) {
-        from = world.nodes.at(data.id_1).pos_;
-        to = world.nodes.at(data.id_2).pos_;
-        length = sqrt(pow(from.x - to.x, 2) + pow(from.y - to.y, 2));
+        : DynamicShape(5), world_(world), data_(data), from(world.nodes.at(data.id_1).pos_), to(world.nodes.at(data.id_2).pos_)  {
+        length = (float) sqrt(pow(from.x - to.x, 2) + pow(from.y - to.y, 2));
     }
 
     void draw(sf::RenderWindow &window, const AnimationConfig &config, float t) override {
         sf::RectangleShape line(sf::Vector2f(length, config.line_thickness));
-        float lerped = std::lerp(0.0f, 255.0f, data_.life_ratio);
-        float angle = atan2(to.y - from.y, to.x - from.x);
+        auto lerped = (uint8_t) std::lerp(0.0f, 255.0f, (float) data_.life_ratio);
+        auto angle = (float) atan2(to.y - from.y, to.x - from.x);
 
         line.setOrigin(sf::Vector2f(length / 2, config.line_thickness / 2));
         line.setFillColor(sf::Color(lerped, lerped, lerped));
-        line.setRotation(angle * 180 / M_PI);
+        line.setRotation(angle * 180.0f / (float) M_PI);
 
         line.setPosition((from+to)/2.f);
 

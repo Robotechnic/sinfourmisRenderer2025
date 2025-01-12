@@ -65,9 +65,9 @@ class Node : public DynamicShape {
 
 		// convert 8 bit integer color to 32 bit color
 		uint32_t color = 0;
-		int r = (data_.phero >> 5) * 255 / 7;
-		int g = ((data_.phero >> 2) & 0b111) * 255 / 7;
-		int b = (data_.phero & 0b11) * 255 / 3;
+		int r = (uint8_t) (data_.phero >> 5) * 255 / 7;
+		int g = (uint8_t) ((data_.phero >> 2) & 0b111) * 255 / 7;
+		int b = (uint8_t) (data_.phero & 0b11) * 255 / 3;
 		sf::Color phero_color(r, g, b);
 
         circle.setFillColor(phero_color);
@@ -76,10 +76,10 @@ class Node : public DynamicShape {
 
         const auto n = (int) world_.teams.size();
         for (int i = 0; i < n; i++) {
-            float angle_i = std::lerp(angle_before[i+1], angle_after[i+1], t) * 2 * M_PI;
-            float angle_i_p_1 = std::lerp(angle_before[i + 2], angle_after[i + 2], t) * 2 * M_PI;
+            auto angle_i = std::lerp(angle_before[i+1], angle_after[i+1], t) * 2.f * M_PI;
+            auto angle_i_p_1 = std::lerp(angle_before[i + 2], angle_after[i + 2], t) * 2.f * M_PI;
 
-            Arc arc(config.node_size, angle_i, angle_i_p_1);
+            Arc arc(config.node_size, (float) angle_i, (float) angle_i_p_1);
             arc.setFillColor(
                 sf::Color((uint32_t) std::stoul(teams_vector.at(i).color.substr(1, 6)+"ff", nullptr, 16)));
             arc.setThickness(10);
@@ -89,11 +89,11 @@ class Node : public DynamicShape {
 
         window.draw(circle, config.graphic_transform * sf::Transform().translate(data_.pos_).translate(-config.node_size/2.f, -config.node_size/2.f));
 		if (data_.type == "REINE") {
-			#define ANGLE 0.4
-			Arc arc1(config.node_size * 0.5, ANGLE, M_PI / 2 - ANGLE);
+			const float ANGLE = .4f;
+			Arc arc1(config.node_size * .5, ANGLE, M_PI / 2 - ANGLE);
             arc1.setFillColor(sf::Color(
                 (uint32_t)std::stoul(world_.teams.at(data_.team).color.substr(1, 6) + "ff", nullptr, 16)));
-            arc1.setThickness(config.node_size * 0.3);
+            arc1.setThickness(config.node_size * .3f);
 			arc1.updateArc();
 			window.draw(arc1, config.graphic_transform * sf::Transform().translate(data_.pos_));
 			arc1.setStartAngle(M_PI / 2 + ANGLE);
@@ -115,7 +115,7 @@ class Node : public DynamicShape {
 			window.draw(circle, config.graphic_transform * sf::Transform().translate(data_.pos_).translate(-config.node_size/2.f, -config.node_size/2.f));
         } else if(data_.type == "NOURRITURE") {
 
-            float ratio = (float) (std::lerp(data_.food, 
+            auto ratio = (float) (std::lerp(data_.food, 
                 data_.anim.value_or<NodeDataAnimation>({std::make_optional(data_.food), std::nullopt})
                     .food.value_or(data_.food), t) / (float) world_.max_food);
             float radius =  .75f * config.node_size * ratio * .5f;
