@@ -108,25 +108,25 @@ int main(int argc, char **argv) {
     std::vector<sf::Vector2f> arrangement;
 	switch (team_count) {
 		case 2:
-			arrangement = {{-1, 1}, {1, 1}};
+			arrangement = {{-1, 0.95}, {1, 0.95}};
 			break;
 		case 3:
-			arrangement = {{-1, 1}, {1, 1}, {0, -1}};
+			arrangement = {{-1, 0.95}, {1, 0.95}, {0, -1}};
 			break;
 		case 4:
-			arrangement = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}};
+			arrangement = {{-1, 0.95}, {1, 0.95}, {-1, -1}, {1, -1}};
 			break;
 		case 5:
-			arrangement = {{-1, 1}, {0, 1}, {1, 1}, {-1, -1}, {1, -1}};
+			arrangement = {{-1, 0.95}, {0, 0.95}, {1, 0.95}, {-1, -1}, {1, -1}};
 			break;
 		case 6:
-			arrangement = {{-1, 1}, {0, 1}, {1, 1}, {-1, -1}, {0, -1}, {1, -1}};
+			arrangement = {{-1, 0.95}, {0, 0.95}, {1, 0.95}, {-1, -1}, {0, -1}, {1, -1}};
 			break;
 		case 7:
-			arrangement = {{-1, 1}, {0, 1}, {1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
+			arrangement = {{-1, 0.95}, {0, 0.95}, {1, 0.95}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
 			break;
 		case 8:
-			arrangement = {{-1, 1}, {0, 1}, {1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}};
+			arrangement = {{-1, 0.95}, {0, 0.95}, {1, 0.95}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}};
 			break;
 	}
 
@@ -177,10 +177,10 @@ int main(int argc, char **argv) {
 		if (team_count < 9) {
 			int i = 0;
 			for (auto &team: data.teams) {
-				// sf::Vector2f position = {
-				// 	window.getSize().x / 2 + arrangement[i].x * window.getSize().x / 2,
-				// 	window.getSize().y / 2 + arrangement[i].y * window.getSize().y / 2
-				// };
+				sf::Vector2f position = {
+					window.getSize().x / 2.f + arrangement[i].x * (window.getSize().x / 2.4f),
+					window.getSize().y / 2.f + arrangement[i].y * (window.getSize().y / 2.05f)
+				};
 				sf::Text text;
 				text.setFont(font);
 				if (frame_counter < (unsigned int)config.frame_duration || !team.second.next.has_value()) {
@@ -189,9 +189,16 @@ int main(int argc, char **argv) {
 					text.setString(team.second.name + " : " + std::to_string(team.second.next->score));
 				}
 				text.setCharacterSize(25);
-				text.setFillColor(sf::Color::Red);
-				//text.setPosition(0, 0);
+				text.setStyle(sf::Text::Bold);
+				text.setFillColor(sf::Color(team.second.color_int));
+				auto bound = text.getLocalBounds();
+				text.setOrigin(bound.width / 2, bound.height / 2);
+				text.setPosition(
+					position.x,
+					position.y
+				);
 				window.draw(text);
+				i++;
 			}
 		}
         
