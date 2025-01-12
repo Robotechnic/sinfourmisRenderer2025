@@ -109,25 +109,25 @@ int main(int argc, char **argv) {
     std::vector<sf::Vector2f> arrangement;
 	switch (team_count) {
 		case 2:
-			arrangement = {{-1, 0.95}, {1, 0.95}};
+			arrangement = {{-1, -.95f}, {1, -.95f}};
 			break;
 		case 3:
-			arrangement = {{-1, 0.95}, {1, 0.95}, {0, -1}};
+			arrangement = {{-1, -.95f}, {1, -.95f}, {0, 1}};
 			break;
 		case 4:
-			arrangement = {{-1, 0.95}, {1, 0.95}, {-1, -1}, {1, -1}};
+			arrangement = {{-1, -.95f}, {1, -.95f}, {-1, 1}, {1, 1}};
 			break;
 		case 5:
-			arrangement = {{-1, 0.95}, {0, 0.95}, {1, 0.95}, {-1, -1}, {1, -1}};
+			arrangement = {{-1, -.95f}, {0, -.95f}, {1, -.95f}, {-1, 1}, {1, 1}};
 			break;
 		case 6:
-			arrangement = {{-1, 0.95}, {0, 0.95}, {1, 0.95}, {-1, -1}, {0, -1}, {1, -1}};
+			arrangement = {{-1, -.95f}, {0, -.95f}, {1, -.95f}, {-1, 1}, {0, 1}, {1, 1}};
 			break;
 		case 7:
-			arrangement = {{-1, 0.95}, {0, 0.95}, {1, 0.95}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
+			arrangement = {{-1, -.95f}, {0, -.95f}, {1, -.95f}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}};
 			break;
 		case 8:
-			arrangement = {{-1, 0.95}, {0, 0.95}, {1, 0.95}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}};
+			arrangement = {{-1, -.95f}, {0, -.95f}, {1, -.95f}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}};
 			break;
 	}
 
