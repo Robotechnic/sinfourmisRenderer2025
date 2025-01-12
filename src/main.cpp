@@ -174,10 +174,11 @@ int main(int argc, char **argv) {
         }
 
         window.clear(sf::Color(70, 70, 70));
+		float t =  ((float) frame_counter) / (float) config.frame_duration;
 
         for (size_t i = 0; i < elements.size(); i++)
         {
-            elements.at(i)->draw(window, config, ((float) frame_counter) / (float) config.frame_duration );
+            elements.at(i)->draw(window, config, t );
         }
 
 		if (team_count < 9) {
@@ -189,11 +190,9 @@ int main(int argc, char **argv) {
 				};
 				sf::Text text;
 				text.setFont(font);
-				if (frame_counter < (unsigned int)config.frame_duration || !team.second.next.has_value()) {
-					text.setString(team.second.name + " : " + std::to_string(team.second.score));
-				} else {
-					text.setString(team.second.name + " : " + std::to_string(team.second.next->score));
-				}
+
+				text.setString(team.second.name + " : " + 
+					std::to_string((int) lerp(team.second.score, team.second.next.value_or<TeamDataAnimation>({team.second.score}).score, t)));
 				text.setCharacterSize(25);
 				text.setStyle(sf::Text::Bold);
 				text.setFillColor(sf::Color(team.second.color_int));
