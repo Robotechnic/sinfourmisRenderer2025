@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
 
     for (auto &node : data.nodes) {
         node.second.pos_ = config.physic_transform.transformPoint(node.second.pos_);
-        elements.push_back(std::make_unique<Node>(node.second));
+        elements.push_back(std::make_unique<Node>(data, node.second));
     }
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Sinfourmis Renderer");

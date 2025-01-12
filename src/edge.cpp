@@ -3,9 +3,10 @@
 
 class Edge : public DynamicShape{
     public:
+        const WorldData& world_;
         const EdgeData& data_;
 
-    explicit Edge(const EdgeData& data ) : DynamicShape(5), data_(data) {
+    explicit Edge(const WorldData& world, const EdgeData& data ) : DynamicShape(5), world_(world), data_(data) {
         
     }
 };

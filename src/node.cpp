@@ -3,9 +3,10 @@
 
 class Node : public DynamicShape {
     public:
+        const WorldData& world_;
         const NodeData& data_;
 
-    explicit Node(const NodeData& data ) : DynamicShape(5), data_(data) {
+    explicit Node(const WorldData& world, const NodeData& data ) : DynamicShape(5), world_(world), data_(data) {
         
     }
 
