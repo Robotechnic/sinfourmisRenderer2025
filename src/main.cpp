@@ -22,6 +22,28 @@ int main(int argc, char **argv) {
     program.add_epilog("MIT Licence - Copyright (c) 2025 - sinfonie");
 
 	program.add_argument("logs").help("The logs file to use").required().metavar("LOGS");
+	program.add_argument("-f", "--frame-rate").help("The frame rate of the video").default_value(30).action([](const std::string &value) {
+		auto val = std::stoi(value); 
+		if (val <= 0) {
+			throw std::runtime_error("Frame rate must be positive");
+		}
+		return val;
+    }).metavar("FRAME_RATE");
+	program.add_argument("-d", "--frame-duration").help("The duration of a game tick in frame").default_value(15).action([](const std::string &value) {
+		auto val = std::stoi(value); 
+		if (val <= 0) {
+			throw std::runtime_error("Frame duration must be positive");
+		}
+		return val;
+	}).metavar("FRAME_DURATION");
+
+	program.add_argument("-s", "--scale").help("scale of the drawing").default_value(12).action([](const std::string &value) {
+		auto val = std::stoi(value); 
+		if (val <= 0) {
+			throw std::runtime_error("Frame duration must be positive");
+		}
+		return val;
+	}).metavar("SCALE");
 
 	try {
 		program.parse_args(argc, argv);
@@ -45,7 +67,10 @@ int main(int argc, char **argv) {
     int width = 1500;
     int height = 900;
 
-    AnimationConfig config = {20, 30, 15, 5, sf::Transform().translate(width/2, height/2), sf::Transform().scale(12, 12)};
+    int scale = program.get<int>("scale");
+    AnimationConfig config = {
+		20, program.get<int>("frame-rate"), program.get<int>("frame-duration"), 5, sf::Transform().translate(width/2, height/2), sf::Transform().scale(scale, scale)
+	};
 
 	// int i = 0;
 	// std::string name = "output";
@@ -78,6 +103,39 @@ int main(int argc, char **argv) {
 	}
 	// center the view
 	config.graphic_transform.translate(- (min.x + max.x) / 2, - (min.y + max.y) / 2);
+
+	auto team_count = data.teams.size();
+    std::vector<sf::Vector2f> arrangement;
+	switch (team_count) {
+		case 2:
+			arrangement = {{-1, 1}, {1, 1}};
+			break;
+		case 3:
+			arrangement = {{-1, 1}, {1, 1}, {0, -1}};
+			break;
+		case 4:
+			arrangement = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}};
+			break;
+		case 5:
+			arrangement = {{-1, 1}, {0, 1}, {1, 1}, {-1, -1}, {1, -1}};
+			break;
+		case 6:
+			arrangement = {{-1, 1}, {0, 1}, {1, 1}, {-1, -1}, {0, -1}, {1, -1}};
+			break;
+		case 7:
+			arrangement = {{-1, 1}, {0, 1}, {1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
+			break;
+		case 8:
+			arrangement = {{-1, 1}, {0, 1}, {1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}};
+			break;
+	}
+
+	sf::Font font;
+	if (!font.loadFromFile("Monospace.ttf")) {
+		std::cerr << "Failed to load font" << std::endl;
+		return 1;
+	}
+			
 
     while (window.isOpen()) {
         if (frame_counter >= (unsigned int)config.frame_duration) {
@@ -115,6 +173,27 @@ int main(int argc, char **argv) {
         {
             elements.at(i)->draw(window, config, ((float) frame_counter) / (float) config.frame_duration );
         }
+
+		if (team_count < 9) {
+			int i = 0;
+			for (auto &team: data.teams) {
+				// sf::Vector2f position = {
+				// 	window.getSize().x / 2 + arrangement[i].x * window.getSize().x / 2,
+				// 	window.getSize().y / 2 + arrangement[i].y * window.getSize().y / 2
+				// };
+				sf::Text text;
+				text.setFont(font);
+				if (frame_counter < (unsigned int)config.frame_duration || !team.second.next.has_value()) {
+					text.setString(team.second.name + " : " + std::to_string(team.second.score));
+				} else {
+					text.setString(team.second.name + " : " + std::to_string(team.second.next->score));
+				}
+				text.setCharacterSize(25);
+				text.setFillColor(sf::Color::Red);
+				//text.setPosition(0, 0);
+				window.draw(text);
+			}
+		}
         
 
         window.display();
@@ -123,7 +202,7 @@ int main(int argc, char **argv) {
 		// screenRender.copyToImage().saveToFile(name + "/frame" + std::to_string(world_counter) + std::to_string(frame_counter) + ".png");
     }
 
-	// std::stringstream command;
+    // std::stringstream command;
 	// command << "ffmpeg -framerate " << config.frame_rate << " -i " << name << "/frame%d.png -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p " << name << ".mp4";
 	// system(command.str().c_str());
 

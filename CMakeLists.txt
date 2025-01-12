@@ -42,3 +42,5 @@ FetchContent_MakeAvailable(argparse)
 target_link_libraries(SinfourmisRenderer PRIVATE nlohmann_json::nlohmann_json argparse)
 
 
+
+file(COPY Monospace.ttf DESTINATION ${CMAKE_BINARY_DIR})
