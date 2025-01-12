@@ -31,8 +31,8 @@ class Edge : public DynamicShape{
 			float size = (config.node_size * 0.5 * std::exp(-1 / group.group_data.qt));
 			sf::CircleShape group_repr(size);
 			float progress = std::lerp(group.progress, group.anim_data->progress, t);
-			float transparency = (t <= 0.05 || t >= 0.95) ? std::exp(-4 * std::max(t, 1 - t)) : 1;
-			group_repr.setFillColor(sf::Color((uint32_t) std::stoul(world_.teams.at(group.group_data.team).color.substr(1, 6)+"ff", nullptr, 16)));
+			// int transparency = ((t <= 0.05 || t >= 0.95) ? std::exp(-4 * std::max(t, 1 - t)) : 1) * 255;
+			group_repr.setFillColor(sf::Color(world_.teams.at(group.group_data.team).color_int)); // & (0xFFFFFF00 | transparency)));
 
 			window.draw(group_repr, config.graphic_transform * sf::Transform().translate(sf::Vector2f(
 				std::lerp(from.x , to.x, progress) - size/2,
